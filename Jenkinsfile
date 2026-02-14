@@ -1,20 +1,25 @@
-pipeline{
+pipeline {
     agent any
-    stages {
-        stage('source code') {
-            steps {
-                echo 'Cloning...'
-                   git branch: 'main', url: 'https://github.com/PV-Sudarsan/task-jenkins.git'
 
-            }
-        }
-        stage('terraform') {
+    stages {
+
+        stage('Terraform Init') {
             steps {
-                echo 'Deploying...'
                 sh 'terraform init'
-                sh 'terraform plan -var="ami_id=ami-0abc1234def567890"'
-                sh 'terraform apply -var="ami_id=ami-0abc1234def567890" -auto-approve'
             }
         }
+
+        stage('Terraform Plan') {
+            steps {
+                sh 'terraform plan -var="ami_id=ami-0abc1234def567890"'
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                sh 'terraform apply -auto-approve -var="ami_id=ami-0abc1234def567890"'
+            }
+        }
+
     }
 }
